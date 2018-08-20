@@ -38,7 +38,7 @@ I després l'API
 
 Per ara només hi ha dos mètodes un per afegir una traducció i un per veureles (encara no es fan comprovacions)
 
-Es pot veure les traduccions d'un color enviant un GET a /api/color/xxx (on xxx és el codi RGB en hexadecimal)
+Es poden veure les traduccions d'un color enviant un GET a /api/color/xxx (on xxx és el codi RGB en hexadecimal)
 
     http --verify=no  https://localhost:5001/api/colors/FFFF00
 
@@ -121,6 +121,20 @@ Si tot ha anat bé el sistema contesta amb un 200 Ok
         "message": "Translation added"
     }
 
+També es pot modificar la traducció d'un idioma amb el mètode PUT (es canvia la traducció que coinicideixi amb el valor de _language_.
+
+    http --verify=no  put https://localhost:5001/api/colors/FFFF00 Language="french" name="jaune"
+
 Espectacular oi?
 
 No gaire, però l'avantatge del sitema és que es pot escalar molt més fàcilment que un sistema tradicional creant clusters de Silos, etc... (llegiu la documentació)
+
+## API
+
+Les peticions implementades són:
+
+| URL                    | Mètode                            |
+| ---------------------- | --------------------------------- |
+| GET /api/color/ff0000  | Obtenir les traduccions de FF0000 |
+| POST /api/color/ff0000 | Afegir una traducció de FF0000    |
+| PUT /api/color/ff0000  | Modificar una traducció de FF0000 |

@@ -5,6 +5,7 @@ using Orleans;
 using System.Threading.Tasks;
 using GrainInterfaces.States;
 using Orleans.Providers;
+using System.Linq;
 
 namespace Grains
 {
@@ -45,6 +46,26 @@ namespace Grains
         {
             await ReadStateAsync();
             return State.Value.Names;
+        }
+
+        public async Task ModifyTranslation(ColorTranslation translation)
+        {
+            await ReadStateAsync();
+
+            if (State.Value == null)
+            {
+                State = new ColorState();
+            }
+
+            foreach (ColorTranslation item in State.Value.Names)
+            {
+                if (item.Language == translation.Language)
+                {
+                    item.name = translation.name;
+                }
+            }
+
+            await WriteStateAsync();
         }
     }
 }
