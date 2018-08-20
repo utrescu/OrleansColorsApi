@@ -4,6 +4,10 @@ La idea és desenvolupar una API en Net Core fent servir un sistema d'actors. En
 
 Els avantatges dels sistemes d'actors és que simplifiquen la concurrència, són fàcilment escalables i etc... Millor que en mireu els avantatges a la seva web ;-)
 
+He activat el Dashboard per defecte. S'hi accedeix amb http://localhost:8080:
+
+![Dashboard](README/orleans-dashboard.png)
+
 ## Què he fet?
 
 El que hi ha implementat és un sistema de traducció del codi RGB als diferents idiomes ... (ho sé fa plorar).
@@ -34,9 +38,9 @@ I després l'API
 
 Per ara només hi ha dos mètodes un per afegir una traducció i un per veureles (encara no es fan comprovacions)
 
-Es pot veure les traduccions d'un color enviant un GET a /api/color/xxx (on xxx és el codi RGB)
+Es pot veure les traduccions d'un color enviant un GET a /api/color/xxx (on xxx és el codi RGB en hexadecimal)
 
-    $ http --verify=no  https://localhost:5001/api/colors/ffff00
+    http --verify=no  https://localhost:5001/api/colors/FFFF00
 
 La resposta serà un document JSON amb les traduccions que hi hagi
 
@@ -47,7 +51,7 @@ La resposta serà un document JSON amb les traduccions que hi hagi
     Transfer-Encoding: chunked
 
     {
-        "id": "ffff00",
+        "id": "FFFF00",
         "names": [
             {
                 "language": "catalan",
@@ -80,9 +84,21 @@ Si el color no té cap traducció tornarà el document sense res a l'array 'name
         "names": []
     }
 
-Es pot enviar una nova traducció al sistema enviant un POST amb l'Id del color i les dades de la traducció en JSON
+També dóna error si es passa alguna cosa que no sigui un codi RGB ...
 
-    http --verify=no  post https://localhost:5001/api/colors?id=ffff00 Language="french" name="jaune"
+    HTTP/1.1 400 Bad Request
+    Content-Type: application/json; charset=utf-8
+    Date: Mon, 20 Aug 2018 20:27:24 GMT
+    Server: Kestrel
+    Transfer-Encoding: chunked
+
+    {
+        "message": "Incorrect RGB Code"
+    }
+
+Es pot enviar una nova traducció al sistema enviant un POST amb l'Id del color com a paràmetre GET (per fer-ho diferent) i les dades de la traducció en el cos del missatge en format JSON
+
+    http --verify=no  post https://localhost:5001/api/colors?id=FFFF00 Language="french" name="jaune"
 
 Això ha enviat de contingut una cosa com aquesta:
 
@@ -96,9 +112,14 @@ Això ha enviat de contingut una cosa com aquesta:
 Si tot ha anat bé el sistema contesta amb un 200 Ok
 
     HTTP/1.1 200 OK
-    Content-Length: 0
-    Date: Mon, 20 Aug 2018 17:50:52 GMT
+    Content-Type: application/json; charset=utf-8
+    Date: Mon, 20 Aug 2018 20:22:33 GMT
     Server: Kestrel
+    Transfer-Encoding: chunked
+
+    {
+        "message": "Translation added"
+    }
 
 Espectacular oi?
 

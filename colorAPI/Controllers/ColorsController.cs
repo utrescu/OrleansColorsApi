@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Orleans;
 using GrainInterfaces;
 using GrainInterfaces.States;
+using System.Text.RegularExpressions;
 
 namespace apicolors.Controllers
 {
@@ -22,19 +23,36 @@ namespace apicolors.Controllers
 
         // GET api/colors/ff0000
         [HttpGet("{id}")]
-        public async Task<Color> Get(string id)
+        public async Task<IActionResult> Get(string id)
         {
-            var grain = _client.GetGrain<IColorGrain>(id);
-            return await grain.GetColor();
+            var rgb = id.ToUpper();
+            if (isRGBCorrect(rgb))
+            {
+                var grain = _client.GetGrain<IColorGrain>(rgb);
+                var resultat = await grain.GetColor();
+                return Ok(resultat);
+            }
+            return BadRequest(new { Message = "Incorrect RGB Code" });
         }
 
         // POST api/colors/00ff00
         [HttpPost]
-        public async Task<ActionResult> Post(string id, [FromBody]ColorTranslation value)
+        public async Task<IActionResult> Post(string id, [FromBody]ColorTranslation value)
         {
-            var grain = _client.GetGrain<IColorGrain>(id);
-            await grain.AddTranslation(value);
-            return Ok();
+            var rgb = id.ToUpper();
+            if (isRGBCorrect(rgb))
+            {
+                var grain = _client.GetGrain<IColorGrain>(rgb);
+                await grain.AddTranslation(value);
+                return Ok(new { Message = "Translation added" });
+            }
+            return BadRequest(new { Message = "Incorrect RGB Code" });
+        }
+
+        private bool isRGBCorrect(string value)
+        {
+            Match result = Regex.Match(value, @"^[0-9A-F]{6}$");
+            return result.Success;
         }
 
     }
