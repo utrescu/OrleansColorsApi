@@ -10,7 +10,7 @@ He activat el Dashboard per defecte. S'hi accedeix amb http://localhost:8080:
 
 ## Què he fet?
 
-El que hi ha implementat és un sistema de traducció del codi RGB als diferents idiomes ... (ho sé fa plorar).
+El que hi ha implementat és un sistema de traducció del codi RGB als diferents idiomes ... (ho sé, fa plorar).
 
 La idea és que quan algú demani per un codi RGB li digui quin és el nom que té aquest color en diferents idiomes
 
