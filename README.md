@@ -36,7 +36,7 @@ I després l'API
 
 ## Funcionament
 
-Per ara només hi ha dos mètodes un per afegir una traducció i un per veureles (encara no es fan comprovacions)
+> Faig les demostracions amb [httpie](https://httpie.org/)
 
 Es poden veure les traduccions d'un color enviant un GET a /api/color/xxx (on xxx és el codi RGB en hexadecimal)
 
@@ -96,7 +96,7 @@ També dóna error si es passa alguna cosa que no sigui un codi RGB ...
         "message": "Incorrect RGB Code"
     }
 
-Es pot enviar una nova traducció al sistema enviant un POST amb l'Id del color com a paràmetre GET (per fer-ho diferent) i les dades de la traducció en el cos del missatge en format JSON
+Es pot enviar una nova traducció al sistema enviant un POST amb l'Id del color com a paràmetre i les dades de la traducció en el cos del missatge en format JSON
 
     http --verify=no  post https://localhost:5001/api/colors/FFFF00 Language="french" name="jaune"
 
