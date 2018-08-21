@@ -93,7 +93,7 @@ namespace apicolors.Controllers
         /// </remarks>
         /// <param name="id"></param>
         /// <response code="200">Translation added</response>
-        /// <response code="400">The RGB Code is incorrect</response>
+        /// <response code="400">Error adding translation</response>
         [HttpPost("{id}")]
         public async Task<IActionResult> Post(string id, [FromBody]ColorTranslation value)
         {
@@ -101,7 +101,11 @@ namespace apicolors.Controllers
             if (isRGBCorrect(rgb))
             {
                 var grain = _client.GetGrain<IColorGrain>(rgb);
-                await grain.AddTranslation(value);
+                var result = await grain.AddTranslation(value);
+                if (!result)
+                {
+                    return BadRequest(new { Message = "Translation already exists" });
+                }
                 return Ok(new { Message = "Translation added" });
             }
             return BadRequest(new { Message = "Incorrect RGB Code" });

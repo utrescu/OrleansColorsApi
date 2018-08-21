@@ -41,7 +41,7 @@ namespace Grains
             return false;
         }
 
-        public async Task AddTranslation(ColorTranslation translation)
+        public async Task<bool> AddTranslation(ColorTranslation translation)
         {
             if (State.Value == null)
             {
@@ -56,8 +56,13 @@ namespace Grains
                 };
             }
 
+            if (State.Value.Translations.Count(it => it.Language == translation.Language) != 0)
+            {
+                return false;
+            }
             State.Value.Translations.Add(translation);
             await WriteStateAsync();
+            return true;
         }
 
         public async Task<bool> ModifyTranslation(ColorTranslation translation)
