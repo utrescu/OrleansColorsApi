@@ -57,8 +57,7 @@ namespace apicolors.Controllers
         /// </remarks>
         /// <param name="id"></param>
         /// <response code="200">Translations deleted</response>
-        /// <response code="404">RGB code not found</response>
-        /// <response code="400">The RGB Code is incorrect</response>
+        /// <response code="400">Unable to delete translation</response>
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
@@ -123,8 +122,7 @@ namespace apicolors.Controllers
         /// </remarks>
         /// <param name="id"></param>
         /// <response code="200">Translation changed</response>
-        /// <response code="404">Translation not found</response>
-        /// <response code="400">The RGB Code is incorrect</response>
+        /// <response code="400">Unable to modify translation</response>
         [HttpPut("{id}")]
         public async Task<IActionResult> Modify(string id, [FromBody]ColorTranslation value)
         {
@@ -153,8 +151,7 @@ namespace apicolors.Controllers
         /// </remarks>
         /// <param name="id"></param>
         /// <response code="200">Translation removed</response>
-        /// <response code="404">Translation not found</response>
-        /// <response code="400">The RGB Code is incorrect</response>
+        /// <response code="400">Unable to delete</response>
         [HttpDelete("{id}/{lang}")]
         public async Task<IActionResult> Delete(string id, string lang)
         {
