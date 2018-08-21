@@ -6,6 +6,7 @@ using GrainInterfaces.States;
 using Orleans.Providers;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System;
 
 namespace Grains
 {
@@ -15,17 +16,27 @@ namespace Grains
         public override Task OnActivateAsync()
         {
             string id = this.GetPrimaryKeyString();
-            if (!isRGBCorrect(id))
+            if (!IsRGBCorrect(id))
             {
                 throw new ColorsException("RGB code incorrect");
             }
             return base.OnActivateAsync();
         }
 
-        private bool isRGBCorrect(string value)
+        private bool IsRGBCorrect(string value)
         {
             Match result = Regex.Match(value, @"^[0-9A-F]{6}$");
             return result.Success;
+        }
+
+        private bool IsValidTranslation(ColorTranslation c) => c.Language != null && c.Translation != null;
+
+        private void Validate(ColorTranslation translation)
+        {
+            if (!IsValidTranslation(translation))
+            {
+                throw new ColorsException("Invallid values");
+            }
         }
 
         public async Task<Color> GetColor()
@@ -57,6 +68,8 @@ namespace Grains
 
         public async Task AddTranslation(ColorTranslation translation)
         {
+            Validate(translation);
+
             if (State.Value == null)
             {
                 // Un color que no existeix, cal crear l'estat
@@ -78,14 +91,18 @@ namespace Grains
             await WriteStateAsync();
         }
 
+
+
         public async Task ModifyTranslation(ColorTranslation translation)
         {
-            var modified = false;
+            Validate(translation);
 
             if (State.Value == null)
             {
                 throw new ColorsException("Translation does not exists");
             }
+
+            var modified = false;
 
             foreach (ColorTranslation item in State.Value.Translations)
             {
