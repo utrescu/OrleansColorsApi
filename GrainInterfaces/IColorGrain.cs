@@ -13,6 +13,8 @@ namespace GrainInterfaces
     {
         Task<Color> GetColor();
 
+        Task<bool> DeleteColor();
+
         Task<List<ColorTranslation>> GetTranslations();
 
         Task AddTranslation(ColorTranslation translation);

@@ -48,6 +48,36 @@ namespace apicolors.Controllers
         }
 
         /// <summary>
+        /// Delete all translations from RGB Code
+        /// </summary>
+        /// <remarks>
+        /// example:
+        ///
+        ///     DELETE /api/color/ff0000
+        ///
+        /// </remarks>
+        /// <param name="id"></param>
+        /// <response code="200">Translations deleted</response>
+        /// <response code="400">The RGB Code is incorrect</response>
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var rgb = id.ToUpper();
+            if (isRGBCorrect(rgb))
+            {
+                var grain = _client.GetGrain<IColorGrain>(rgb);
+                var resultat = await grain.DeleteColor();
+                if (!resultat)
+                {
+                    return NotFound(new { Message = "RGB Not found" });
+                }
+                return Ok(new { Message = "All RGB translations deleted" });
+            }
+            return BadRequest(new { Message = "Incorrect RGB Code" });
+        }
+
+
+        /// <summary>
         /// Add a translation to a RGB color
         /// </summary>
         /// <remarks>

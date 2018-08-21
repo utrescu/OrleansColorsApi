@@ -12,18 +12,6 @@ namespace Grains
     [StorageProvider(ProviderName = "ColorsStorage")]
     public class ColorGrain : Grain<ColorState>, IColorGrain
     {
-        public async Task AddTranslation(ColorTranslation translation)
-        {
-            await ReadStateAsync();
-
-            if (State.Value == null)
-            {
-                State = new ColorState();
-            }
-
-            State.Value.Names.Add(translation);
-            await WriteStateAsync();
-        }
 
         public async Task<Color> GetColor()
         {
@@ -40,6 +28,30 @@ namespace Grains
             await WriteStateAsync();
 
             return State.Value;
+        }
+
+        public async Task<bool> DeleteColor()
+        {
+            await ReadStateAsync();
+            if (State.Value != null)
+            {
+                await ClearStateAsync();
+                return true;
+            }
+            return false;
+        }
+
+        public async Task AddTranslation(ColorTranslation translation)
+        {
+            await ReadStateAsync();
+
+            if (State.Value == null)
+            {
+                State = new ColorState();
+            }
+
+            State.Value.Names.Add(translation);
+            await WriteStateAsync();
         }
 
         public async Task<List<ColorTranslation>> GetTranslations()
