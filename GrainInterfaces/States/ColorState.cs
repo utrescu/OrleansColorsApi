@@ -9,7 +9,7 @@ namespace GrainInterfaces.States
 
         public string Language { get; set; }
 
-        public string name { get; set; }
+        public string Translation { get; set; }
 
     }
 
@@ -18,7 +18,7 @@ namespace GrainInterfaces.States
     {
         public string Id { get; set; }
 
-        public List<ColorTranslation> Names { get; set; }
+        public List<ColorTranslation> Translations { get; set; }
 
     }
 

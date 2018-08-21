@@ -52,26 +52,26 @@ La resposta serà un document JSON amb les traduccions que hi hagi
 
     {
         "id": "FFFF00",
-        "names": [
+        "translations": [
             {
                 "language": "catalan",
-                "name": "groc"
+                "translation": "groc"
             },
             {
                 "language": "spanish",
-                "name": "amarillo"
+                "translation": "amarillo"
             },
             {
                 "language": "english",
-                "name": "yellow"
+                "translation": "yellow"
             },
             {
                 "language": "french",
-                "name": "jaune"
+                "translation": "jaune"
             }
         ]
 
-Si el color no té cap traducció tornarà el document sense res a l'array 'names':
+Si el color no té cap traducció tornarà el document sense res a l'array 'translations':
 
     HTTP/1.1 200 OK
     Content-Type: application/json; charset=utf-8
@@ -81,7 +81,7 @@ Si el color no té cap traducció tornarà el document sense res a l'array 'name
 
     {
         "id": "000000",
-        "names": []
+        "translations": []
     }
 
 També dóna error si es passa alguna cosa que no sigui un codi RGB ...
@@ -98,14 +98,14 @@ També dóna error si es passa alguna cosa que no sigui un codi RGB ...
 
 Es pot enviar una nova traducció al sistema enviant un POST amb l'Id del color com a paràmetre GET (per fer-ho diferent) i les dades de la traducció en el cos del missatge en format JSON
 
-    http --verify=no  post https://localhost:5001/api/colors/FFFF00 Language="french" name="jaune"
+    http --verify=no  post https://localhost:5001/api/colors/FFFF00 Language="french" Translation="jaune"
 
 Això envia de contingut una document JSON com aquest:
 
 ```json
 {
   "language": "french",
-  "name": "jaune"
+  "translation": "jaune"
 }
 ```
 
@@ -123,7 +123,7 @@ Si tot ha anat bé el sistema contesta amb un 200 Ok
 
 També es pot modificar la traducció d'un idioma amb el mètode PUT (es canvia la traducció que coinicideixi amb el valor de _language_.
 
-    http --verify=no  put https://localhost:5001/api/colors/FFFF00 Language="french" name="jaune"
+    http --verify=no  put https://localhost:5001/api/colors/FFFF00 Language="french" Translation="jaune"
 
 La opció d'esborrar és més o menys el mateix. S'envia DELETE i el que es vol esborrar
 

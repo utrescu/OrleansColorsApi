@@ -23,7 +23,7 @@ namespace Grains
             State.Value = new Color
             {
                 Id = this.GetPrimaryKeyString(),
-                Names = new List<ColorTranslation>()
+                Translations = new List<ColorTranslation>()
             };
 
             await WriteStateAsync();
@@ -51,12 +51,12 @@ namespace Grains
                     Value = new Color
                     {
                         Id = this.GetPrimaryKeyString(),
-                        Names = new List<ColorTranslation>()
+                        Translations = new List<ColorTranslation>()
                     }
                 };
             }
 
-            State.Value.Names.Add(translation);
+            State.Value.Translations.Add(translation);
             await WriteStateAsync();
         }
 
@@ -69,11 +69,11 @@ namespace Grains
                 return false;
             }
 
-            foreach (ColorTranslation item in State.Value.Names)
+            foreach (ColorTranslation item in State.Value.Translations)
             {
                 if (item.Language == translation.Language)
                 {
-                    item.name = translation.name;
+                    item.Translation = translation.Translation;
                     modified = true;
                 }
             }
@@ -91,14 +91,14 @@ namespace Grains
                 return false;
             }
 
-            var numColors = State.Value.Names.Count;
-            var result = State.Value.Names.Where(x => x.Language != translation).ToList();
+            var numColors = State.Value.Translations.Count;
+            var result = State.Value.Translations.Where(x => x.Language != translation).ToList();
 
-            State.Value.Names = result;
+            State.Value.Translations = result;
 
             await WriteStateAsync();
 
-            return State.Value.Names.Count != numColors;
+            return State.Value.Translations.Count != numColors;
         }
     }
 }
