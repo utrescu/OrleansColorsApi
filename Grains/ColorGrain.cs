@@ -60,12 +60,6 @@ namespace Grains
             await WriteStateAsync();
         }
 
-        public async Task<List<ColorTranslation>> GetTranslations()
-        {
-            await ReadStateAsync();
-            return State.Value.Names;
-        }
-
         public async Task<bool> ModifyTranslation(ColorTranslation translation)
         {
             var modified = false;
