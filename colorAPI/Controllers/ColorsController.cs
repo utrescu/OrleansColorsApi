@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Orleans;
 using GrainInterfaces;
 using GrainInterfaces.States;
-using System.Text.RegularExpressions;
 
 namespace apicolors.Controllers
 {
@@ -38,13 +34,16 @@ namespace apicolors.Controllers
         public async Task<IActionResult> Get(string id)
         {
             var rgb = id.ToUpper();
-            if (isRGBCorrect(rgb))
+            try
             {
                 var grain = _client.GetGrain<IColorGrain>(rgb);
                 var resultat = await grain.GetColor();
                 return Ok(resultat);
             }
-            return BadRequest(new { Message = "Incorrect RGB Code" });
+            catch (ColorsException e)
+            {
+                return BadRequest(new { Message = e.Message });
+            }
         }
 
         /// <summary>
@@ -64,17 +63,16 @@ namespace apicolors.Controllers
         public async Task<IActionResult> Delete(string id)
         {
             var rgb = id.ToUpper();
-            if (isRGBCorrect(rgb))
+            try
             {
                 var grain = _client.GetGrain<IColorGrain>(rgb);
-                var resultat = await grain.DeleteColor();
-                if (!resultat)
-                {
-                    return NotFound(new { Message = "RGB Not found" });
-                }
+                await grain.DeleteColor();
                 return Ok(new { Message = "All RGB translations deleted" });
             }
-            return BadRequest(new { Message = "Incorrect RGB Code" });
+            catch (ColorsException e)
+            {
+                return BadRequest(new { Message = e.Message });
+            }
         }
 
 
@@ -98,17 +96,16 @@ namespace apicolors.Controllers
         public async Task<IActionResult> Post(string id, [FromBody]ColorTranslation value)
         {
             var rgb = id.ToUpper();
-            if (isRGBCorrect(rgb))
+            try
             {
                 var grain = _client.GetGrain<IColorGrain>(rgb);
-                var result = await grain.AddTranslation(value);
-                if (!result)
-                {
-                    return BadRequest(new { Message = "Translation already exists" });
-                }
+                await grain.AddTranslation(value);
                 return Ok(new { Message = "Translation added" });
             }
-            return BadRequest(new { Message = "Incorrect RGB Code" });
+            catch (ColorsException e)
+            {
+                return BadRequest(new { Message = e.Message });
+            }
         }
 
         /// <summary>
@@ -132,17 +129,17 @@ namespace apicolors.Controllers
         public async Task<IActionResult> Modify(string id, [FromBody]ColorTranslation value)
         {
             var rgb = id.ToUpper();
-            if (isRGBCorrect(rgb))
+            try
             {
                 var grain = _client.GetGrain<IColorGrain>(rgb);
-                var result = await grain.ModifyTranslation(value);
-                if (result == false)
-                {
-                    return NotFound(new { Message = "Translation not found" });
-                }
+                await grain.ModifyTranslation(value);
                 return Ok(new { Message = "Translation modified" });
+
             }
-            return BadRequest(new { Message = "Incorrect RGB Code" });
+            catch (ColorsException e)
+            {
+                return BadRequest(new { Message = e.Message });
+            }
         }
 
         /// <summary>
@@ -162,22 +159,16 @@ namespace apicolors.Controllers
         public async Task<IActionResult> Delete(string id, string lang)
         {
             var rgb = id.ToUpper();
-            if (isRGBCorrect(rgb))
+            try
             {
                 var grain = _client.GetGrain<IColorGrain>(rgb);
-                var result = await grain.DeleteTranslation(lang);
-                if (result == false)
-                {
-                    return NotFound(new { Message = "Translation not found" });
-                }
+                await grain.DeleteTranslation(lang);
                 return Ok(new { Message = "Translation deleted" });
             }
-            return BadRequest(new { Message = "Incorrect RGB Code" });
-        }
-        private bool isRGBCorrect(string value)
-        {
-            Match result = Regex.Match(value, @"^[0-9A-F]{6}$");
-            return result.Success;
+            catch (ColorsException e)
+            {
+                return BadRequest(new { Message = e.Message });
+            }
         }
 
     }

@@ -1,17 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using GrainInterfaces;
 using Orleans;
 using System.Threading.Tasks;
 using GrainInterfaces.States;
 using Orleans.Providers;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System;
 
 namespace Grains
 {
     [StorageProvider(ProviderName = "ColorsStorage")]
     public class ColorGrain : Grain<ColorState>, IColorGrain
     {
+        public override Task OnActivateAsync()
+        {
+            string id = this.GetPrimaryKeyString();
+            if (!IsRGBCorrect(id))
+            {
+                throw new ColorsException("RGB code incorrect");
+            }
+            return base.OnActivateAsync();
+        }
+
+        private bool IsRGBCorrect(string value)
+        {
+            Match result = Regex.Match(value, @"^[0-9A-F]{6}$");
+            return result.Success;
+        }
+
+        private bool IsValidTranslation(ColorTranslation c) => c.Language != null && c.Translation != null;
+
+        private void Validate(ColorTranslation translation)
+        {
+            if (!IsValidTranslation(translation))
+            {
+                throw new ColorsException("Invallid values");
+            }
+        }
 
         public async Task<Color> GetColor()
         {
@@ -31,18 +57,19 @@ namespace Grains
             return State.Value;
         }
 
-        public async Task<bool> DeleteColor()
+        public async Task DeleteColor()
         {
-            if (State.Value != null)
+            if (State.Value == null)
             {
-                await ClearStateAsync();
-                return true;
+                throw new ColorsException("RGB value does not exist");
             }
-            return false;
+            await ClearStateAsync();
         }
 
-        public async Task<bool> AddTranslation(ColorTranslation translation)
+        public async Task AddTranslation(ColorTranslation translation)
         {
+            Validate(translation);
+
             if (State.Value == null)
             {
                 // Un color que no existeix, cal crear l'estat
@@ -58,21 +85,24 @@ namespace Grains
 
             if (State.Value.Translations.Count(it => it.Language == translation.Language) != 0)
             {
-                return false;
+                throw new ColorsException("Translation already exists");
             }
             State.Value.Translations.Add(translation);
             await WriteStateAsync();
-            return true;
         }
 
-        public async Task<bool> ModifyTranslation(ColorTranslation translation)
+
+
+        public async Task ModifyTranslation(ColorTranslation translation)
         {
-            var modified = false;
+            Validate(translation);
 
             if (State.Value == null)
             {
-                return false;
+                throw new ColorsException("Translation does not exists");
             }
+
+            var modified = false;
 
             foreach (ColorTranslation item in State.Value.Translations)
             {
@@ -82,28 +112,32 @@ namespace Grains
                     modified = true;
                 }
             }
+            if (modified == false)
+            {
+                throw new ColorsException("Translation does not exists");
+            }
 
             await WriteStateAsync();
-
-            return modified;
         }
 
-        public async Task<bool> DeleteTranslation(string translation)
+        public async Task DeleteTranslation(string translation)
         {
 
             if (State.Value == null)
             {
-                return false;
+                throw new ColorsException("Translation does not exists");
             }
 
             var numColors = State.Value.Translations.Count;
             var result = State.Value.Translations.Where(x => x.Language != translation).ToList();
 
+            if (State.Value.Translations.Count != numColors)
+            {
+                throw new ColorsException("Translation does not exists");
+            }
+
             State.Value.Translations = result;
-
             await WriteStateAsync();
-
-            return State.Value.Translations.Count != numColors;
         }
     }
 }
