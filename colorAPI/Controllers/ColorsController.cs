@@ -53,7 +53,7 @@ namespace apicolors.Controllers
         /// <remarks>
         /// example:
         ///
-        ///     POST /api/color?id=ff0000
+        ///     POST /api/color/ff0000
         ///     {
         ///         "Language":"catalan",
         ///         "Name": "vermell"
@@ -63,7 +63,7 @@ namespace apicolors.Controllers
         /// <param name="id"></param>
         /// <response code="200">Translation added</response>
         /// <response code="400">The RGB Code is incorrect</response>
-        [HttpPost]
+        [HttpPost("{id}")]
         public async Task<IActionResult> Post(string id, [FromBody]ColorTranslation value)
         {
             var rgb = id.ToUpper();
@@ -91,6 +91,7 @@ namespace apicolors.Controllers
         /// </remarks>
         /// <param name="id"></param>
         /// <response code="200">Translation changed</response>
+        /// <response code="404">Translation not found</response>
         /// <response code="400">The RGB Code is incorrect</response>
         [HttpPut("{id}")]
         public async Task<IActionResult> Modify(string id, [FromBody]ColorTranslation value)
@@ -99,7 +100,11 @@ namespace apicolors.Controllers
             if (isRGBCorrect(rgb))
             {
                 var grain = _client.GetGrain<IColorGrain>(rgb);
-                await grain.ModifyTranslation(value);
+                var result = await grain.ModifyTranslation(value);
+                if (result == false)
+                {
+                    return NotFound(new { Message = "Translation not found" });
+                }
                 return Ok(new { Message = "Translation modified" });
             }
             return BadRequest(new { Message = "Incorrect RGB Code" });
@@ -111,24 +116,25 @@ namespace apicolors.Controllers
         /// <remarks>
         /// example:
         ///
-        ///     DELETE /api/color/ff0000
-        ///     {
-        ///         "Language":"catalan",
-        ///         "Name": "vermell"
-        ///     }
+        ///     DELETE /api/color/ff0000/catalan
         ///
         /// </remarks>
         /// <param name="id"></param>
         /// <response code="200">Translation removed</response>
+        /// <response code="404">Translation not found</response>
         /// <response code="400">The RGB Code is incorrect</response>
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(string id, [FromBody]ColorTranslation value)
+        [HttpDelete("{id}/{lang}")]
+        public async Task<IActionResult> Delete(string id, string lang)
         {
             var rgb = id.ToUpper();
             if (isRGBCorrect(rgb))
             {
                 var grain = _client.GetGrain<IColorGrain>(rgb);
-                await grain.DeleteTranslation(value);
+                var result = await grain.DeleteTranslation(lang);
+                if (result == false)
+                {
+                    return NotFound(new { Message = "Translation not found" });
+                }
                 return Ok(new { Message = "Translation deleted" });
             }
             return BadRequest(new { Message = "Incorrect RGB Code" });

@@ -98,9 +98,9 @@ També dóna error si es passa alguna cosa que no sigui un codi RGB ...
 
 Es pot enviar una nova traducció al sistema enviant un POST amb l'Id del color com a paràmetre GET (per fer-ho diferent) i les dades de la traducció en el cos del missatge en format JSON
 
-    http --verify=no  post https://localhost:5001/api/colors?id=FFFF00 Language="french" name="jaune"
+    http --verify=no  post https://localhost:5001/api/colors/FFFF00 Language="french" name="jaune"
 
-Això ha enviat de contingut una cosa com aquesta:
+Això envia de contingut una document JSON com aquest:
 
 ```json
 {
@@ -127,7 +127,7 @@ També es pot modificar la traducció d'un idioma amb el mètode PUT (es canvia 
 
 La opció d'esborrar és més o menys el mateix. S'envia DELETE i el que es vol esborrar
 
-    http --verify=no  delete https://localhost:5001/api/colors/FFFF00 Language="french" name="jaune"
+    http --verify=no  delete https://localhost:5001/api/colors/FFFF00/french
 
 Espectacular oi?
 
@@ -137,9 +137,9 @@ No gaire, però l'avantatge del sitema és que es pot escalar molt més fàcilme
 
 Les peticions implementades són:
 
-| URL                      | Mètode                            |
-| ------------------------ | --------------------------------- |
-| GET /api/color/ff0000    | Obtenir les traduccions de FF0000 |
-| POST /api/color/ff0000   | Afegir una traducció de FF0000    |
-| PUT /api/color/ff0000    | Modificar una traducció de FF0000 |
-| DELETE /api/color/ff0000 | Eliminar una traducció de FF0000  |
+| URL                              | Mètode                                  |
+| -------------------------------- | --------------------------------------- |
+| GET /api/color/ff0000            | Obtenir les traduccions de FF0000       |
+| POST /api/color/ff0000           | Afegir una traducció de FF0000          |
+| PUT /api/color/ff0000            | Modificar una traducció de FF0000       |
+| DELETE /api/color/ff0000/spanish | Eliminar la traducció spanish de FF0000 |
