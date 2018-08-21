@@ -58,6 +58,7 @@ namespace apicolors.Controllers
         /// </remarks>
         /// <param name="id"></param>
         /// <response code="200">Translations deleted</response>
+        /// <response code="404">RGB code not found</response>
         /// <response code="400">The RGB Code is incorrect</response>
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
