@@ -125,6 +125,10 @@ També es pot modificar la traducció d'un idioma amb el mètode PUT (es canvia 
 
     http --verify=no  put https://localhost:5001/api/colors/FFFF00 Language="french" name="jaune"
 
+La opció d'esborrar és més o menys el mateix. S'envia DELETE i el que es vol esborrar
+
+    http --verify=no  delete https://localhost:5001/api/colors/FFFF00 Language="french" name="jaune"
+
 Espectacular oi?
 
 No gaire, però l'avantatge del sitema és que es pot escalar molt més fàcilment que un sistema tradicional creant clusters de Silos, etc... (llegiu la documentació)
@@ -133,8 +137,9 @@ No gaire, però l'avantatge del sitema és que es pot escalar molt més fàcilme
 
 Les peticions implementades són:
 
-| URL                    | Mètode                            |
-| ---------------------- | --------------------------------- |
-| GET /api/color/ff0000  | Obtenir les traduccions de FF0000 |
-| POST /api/color/ff0000 | Afegir una traducció de FF0000    |
-| PUT /api/color/ff0000  | Modificar una traducció de FF0000 |
+| URL                      | Mètode                            |
+| ------------------------ | --------------------------------- |
+| GET /api/color/ff0000    | Obtenir les traduccions de FF0000 |
+| POST /api/color/ff0000   | Afegir una traducció de FF0000    |
+| PUT /api/color/ff0000    | Modificar una traducció de FF0000 |
+| DELETE /api/color/ff0000 | Eliminar una traducció de FF0000  |

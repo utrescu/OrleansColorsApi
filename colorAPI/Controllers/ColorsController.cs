@@ -105,6 +105,34 @@ namespace apicolors.Controllers
             return BadRequest(new { Message = "Incorrect RGB Code" });
         }
 
+        /// <summary>
+        /// Modify translation from color
+        /// </summary>
+        /// <remarks>
+        /// example:
+        ///
+        ///     DELETE /api/color/ff0000
+        ///     {
+        ///         "Language":"catalan",
+        ///         "Name": "vermell"
+        ///     }
+        ///
+        /// </remarks>
+        /// <param name="id"></param>
+        /// <response code="200">Translation removed</response>
+        /// <response code="400">The RGB Code is incorrect</response>
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(string id, [FromBody]ColorTranslation value)
+        {
+            var rgb = id.ToUpper();
+            if (isRGBCorrect(rgb))
+            {
+                var grain = _client.GetGrain<IColorGrain>(rgb);
+                await grain.DeleteTranslation(value);
+                return Ok(new { Message = "Translation deleted" });
+            }
+            return BadRequest(new { Message = "Incorrect RGB Code" });
+        }
         private bool isRGBCorrect(string value)
         {
             Match result = Regex.Match(value, @"^[0-9A-F]{6}$");

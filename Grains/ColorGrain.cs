@@ -67,5 +67,21 @@ namespace Grains
 
             await WriteStateAsync();
         }
+
+        public async Task DeleteTranslation(ColorTranslation translation)
+        {
+            await ReadStateAsync();
+
+            if (State.Value == null)
+            {
+                State = new ColorState();
+            }
+
+            var result = State.Value.Names.Where(x => x.Language != translation.Language).ToList();
+
+            State.Value.Names = result;
+
+            await WriteStateAsync();
+        }
     }
 }

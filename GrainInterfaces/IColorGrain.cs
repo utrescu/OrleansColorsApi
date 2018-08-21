@@ -19,5 +19,7 @@ namespace GrainInterfaces
 
         Task ModifyTranslation(ColorTranslation translation);
 
+        Task DeleteTranslation(ColorTranslation translation);
+
     }
 }
