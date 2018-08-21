@@ -1,5 +1,4 @@
 ﻿using Orleans;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using GrainInterfaces.States;
 
@@ -13,13 +12,13 @@ namespace GrainInterfaces
     {
         Task<Color> GetColor();
 
-        Task<bool> DeleteColor();
+        Task DeleteColor();
 
-        Task<bool> AddTranslation(ColorTranslation translation);
+        Task AddTranslation(ColorTranslation translation);
 
-        Task<bool> ModifyTranslation(ColorTranslation translation);
+        Task ModifyTranslation(ColorTranslation translation);
 
-        Task<bool> DeleteTranslation(string translation);
+        Task DeleteTranslation(string translation);
 
     }
 }
