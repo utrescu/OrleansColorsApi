@@ -15,7 +15,8 @@ namespace Grains
 
         public async Task<Color> GetColor()
         {
-            await ReadStateAsync();
+            // Sembla que "await ReadStateAsync()" no és necessari perquè ho fa
+            // en el mètode "OnActivateAsync" que es crida automàticament.
 
             if (State.Value != null) return State.Value;
 
@@ -32,7 +33,6 @@ namespace Grains
 
         public async Task<bool> DeleteColor()
         {
-            await ReadStateAsync();
             if (State.Value != null)
             {
                 await ClearStateAsync();
@@ -43,11 +43,17 @@ namespace Grains
 
         public async Task AddTranslation(ColorTranslation translation)
         {
-            await ReadStateAsync();
-
             if (State.Value == null)
             {
-                State = new ColorState();
+                // Un color que no existeix, cal crear l'estat
+                State = new ColorState
+                {
+                    Value = new Color
+                    {
+                        Id = this.GetPrimaryKeyString(),
+                        Names = new List<ColorTranslation>()
+                    }
+                };
             }
 
             State.Value.Names.Add(translation);
@@ -63,11 +69,10 @@ namespace Grains
         public async Task<bool> ModifyTranslation(ColorTranslation translation)
         {
             var modified = false;
-            await ReadStateAsync();
 
             if (State.Value == null)
             {
-                State = new ColorState();
+                return false;
             }
 
             foreach (ColorTranslation item in State.Value.Names)
@@ -87,11 +92,9 @@ namespace Grains
         public async Task<bool> DeleteTranslation(string translation)
         {
 
-            await ReadStateAsync();
-
             if (State.Value == null)
             {
-                State = new ColorState();
+                return false;
             }
 
             var numColors = State.Value.Names.Count;
