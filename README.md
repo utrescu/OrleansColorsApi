@@ -12,11 +12,23 @@ He activat el Dashboard per defecte. S'hi accedeix amb http://localhost:8080:
 
 El que hi ha implementat és un sistema de traducció del codi RGB als diferents idiomes ... (ho sé, fa plorar).
 
+L'arquitectura resultat és aquesta. Especialment interessant en aquest sistema és la forma com es gestionen els actors (grains)
+
+![Arquitectura](README/orleans1.png)
+
 La idea és que quan algú demani per un codi RGB li digui quin és el nom que té aquest color en diferents idiomes
 
     FF0000 -> català: vermell, castellà: rojo, anglès: red
 
 El sistema persisteix automàticament les dades que se li entren en una base de dades MySQL de manera que sobreviu a les aturades del servei.
+
+He fet servir MySQL de backend però n'hi ha molts més (Tant SQL com en el núvol, ...): SQL Server, Oracle, PostgreSQL, Azure DB, DynamoDB.
+
+Tot i que només faig servir un sol Silo es pot crear un cluster de Silos per escalar l'aplicació, tenir tolerància a fallades, ...
+
+![Arquitectura2](README/orleans2.png)
+
+El sistema d'actors té una sèrie d'avantatges sobre l'arquitectura tradicional de tres capes ([llegiu-vos-ho vosaltres mateixos](https://dotnet.github.io/orleans/Documentation/Introduction.html) ;-) )
 
 ## Iniciar el programa
 
