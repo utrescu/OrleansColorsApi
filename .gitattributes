@@ -1,1 +1,1 @@
-*/*.sql linguist-vendored=false
+**/OrleansAdoNetContent/*.sql linguist-vendored=false
