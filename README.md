@@ -28,7 +28,7 @@ Tot i que només faig servir un sol Silo es pot crear un cluster de Silos per es
 
 ![Arquitectura2](README/orleans2.png)
 
-El sistema d'actors té una sèrie d'avantatges sobre l'arquitectura tradicional de tres capes ([llegiu-vos-ho vosaltres mateixos](https://dotnet.github.io/orleans/Documentation/Introduction.html) ;-) )
+El sistema d'actors té una sèrie d'avantatges sobre l'arquitectura tradicional de tres capes ([llegiu-vos-ho vosaltres mateixos](https://dotnet.github.io/orleans/Documentation/) ;-) )
 
 ## Iniciar el programa
 
