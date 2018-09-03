@@ -83,7 +83,7 @@ La resposta serà un document JSON amb les traduccions que hi hagi
             }
         ]
 
-Si el color no té cap traducció tornarà el document sense res a l'array 'translations':
+Si el color no té cap traducció tornarà el document sense res a l'array 'translations'. Perquè els grains sempre existeixen, almenys "virtualment", però en el moment en que es criden s'activen
 
     HTTP/1.1 200 OK
     Content-Type: application/json; charset=utf-8
@@ -96,7 +96,7 @@ Si el color no té cap traducció tornarà el document sense res a l'array 'tran
         "translations": []
     }
 
-També dóna error si es passa alguna cosa que no sigui un codi RGB ...
+Dóna error si es passa alguna cosa que no sigui un codi RGB ...
 
     HTTP/1.1 400 Bad Request
     Content-Type: application/json; charset=utf-8
